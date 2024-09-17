@@ -1,5 +1,5 @@
 <?php
-require 'db.php'; // Подключение к базе данных
+require '../../db.php'; // Подключение к базе данных
 
 // Получаем данные из вебхука
 $webhookData = file_get_contents('php://input');
