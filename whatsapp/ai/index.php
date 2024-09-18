@@ -6,7 +6,7 @@ require '../../db.php';
 $webhookData = file_get_contents('php://input');
 $data = json_decode($webhookData, true);
 
-$messages = $data['messages'];
+$messages = $webhookData['messages'];
 // Сохраняем данные в базу как есть
 $msg = R::dispense('webhooks');
 $msg->messageid = $messages['id'];
