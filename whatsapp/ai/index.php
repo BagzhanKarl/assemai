@@ -6,18 +6,32 @@ require '../../db.php';
 $webhookData = file_get_contents('php://input');
 $data = json_decode($webhookData, true);
 
-$messages = $data['messages'];
-// Сохраняем данные в базу как есть
-$msg = R::dispense('webhooks');
-$msg->data = $data;
-$msg->messageid = $messages['id'];
-$msg->from_me = $messages['from_me'];
-$msg->type = $messages['type'];
-$msg->chat_id = $messages['chat_id'];
-$msg->phone = $messages['phone'];
-$msg->text = $messages['text']['body'];
-$msg->timestamp = $messages['timestamp'];
-R::store($msg);
+// Проверяем, что данные корректны
+if (isset($data['messages'][0])) {
+    // Извлекаем данные из массива
+    $message = $data['messages'][0];
+    $event = $data['event'];
 
-echo 'Данные успешно сохранены!';
+    // Подготавливаем объект для сохранения
+    $msg = R::dispense('webhooks');
+    $msg->message_id = $message['id'];
+    $msg->from_me = $message['from_me'];
+    $msg->message_type = $message['type'];
+    $msg->chat_id = $message['chat_id'];
+    $msg->timestamp = $message['timestamp'];
+    $msg->source = $message['source'];
+    $msg->body = $message['text']['body'];
+    $msg->from_number = $message['from'];
+    $msg->from_name = $message['from_name'];
+    $msg->event_type = $event['type'];
+    $msg->event_event = $event['event'];
+    $msg->channel_id = $data['channel_id'];
+
+    // Сохраняем данные в базу
+    R::store($msg);
+
+    echo 'Данные успешно сохранены!';
+} else {
+    echo 'Некорректные данные';
+}
 ?>
