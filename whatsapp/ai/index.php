@@ -4,6 +4,12 @@ require '../../db.php';
 
 $webhookData = file_get_contents('php://input');
 $data = json_decode($webhookData, true);
+$check = R::findOne('webhooks', 'number = ?', [$data['from']]);
+
+if($check){
+    $check->status = 1;
+    R::store($check);
+}
 
 $message = $data['messages'][0];
 $msg = R::dispense('webhooks');
@@ -17,7 +23,15 @@ $msg->body = $message['text']['body'];
 $msg->number = $message['from'];
 $msg->name = $message['from_name'];
 $msg->channelid = $data['channel_id'];
+$msg->status = 0;
 
+$chats = R::dispense('chats');
+$chats->phone = $message['from'];
+$chats->site = 'in';
+$chats->text = $message['text']['body'];
+$chats->time = time();
+$chats->status = 0;
+R::store($chats);
 // Сохраняем данные в базу
 R::store($msg);
 ?>
