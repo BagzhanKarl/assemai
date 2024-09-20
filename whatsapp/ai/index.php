@@ -39,6 +39,9 @@ $chats->chatid = $message['chat_id'];
 $chats->time = time();
 $chats->status = 0;
 R::store($chats);
-// Сохраняем данные в базу
-R::store($msg);
+
+if($message['from_me'] == false){
+    R::store($msg);
+}
+
 ?>
