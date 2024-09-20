@@ -4,14 +4,13 @@ require '../../db.php';
 
 $webhookData = file_get_contents('php://input');
 $data = json_decode($webhookData, true);
-$check = R::findOne('webhooks', 'number = ?', [$data['from']]);
 
+$message = $data['messages'][0];
+$check = R::findOne('webhooks', 'chatid = ?', [$message['chat_id']]);
 if($check){
     $check->status = 1;
     R::store($check);
 }
-
-$message = $data['messages'][0];
 $msg = R::dispense('webhooks');
 $msg->messagid = $message['id'];
 $msg->fromme = $message['from_me'];
