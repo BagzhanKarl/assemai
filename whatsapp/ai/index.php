@@ -35,13 +35,10 @@ if($message['from_me'] == false){
     $chats->side = 'in';
 }
 $chats->text = $message['text']['body'];
+$chats->chatid = $message['chat_id'];
 $chats->time = time();
 $chats->status = 0;
 R::store($chats);
 // Сохраняем данные в базу
 R::store($msg);
-
-$chekshook = R::dispense('just');
-$chekshook->data = $data;
-R::store($chekshook);
 ?>
