@@ -27,7 +27,13 @@ $msg->status = 0;
 
 $chats = R::dispense('chats');
 $chats->phone = $message['from'];
-$chats->site = 'in';
+
+if($message['from_me'] == true){
+    $chats->side = 'out';
+}
+if($message['from_me'] == false){
+    $chats->site = 'in';
+}
 $chats->text = $message['text']['body'];
 $chats->time = time();
 $chats->status = 0;
